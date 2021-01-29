@@ -1,4 +1,10 @@
 import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  Index,
+} from 'typeorm';
 
 @Entity()
 class User extends BaseEntity {
@@ -7,6 +13,9 @@ class User extends BaseEntity {
 
   @Column()
   user_id!: string;
+
+  @Column()
+  @Index('user_name_UNIQUE', { unique: true })
   user_name!: string;
 
   @Column()
