@@ -1,20 +1,19 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import User from 'models/User';
+import { dataValidator } from 'lib/argValidator';
+import { loginSchema, registerSchema, tokenSchema } from './auth.valid';
 
 export const login: RequestHandler = async (req, res, next) => {
   try {
+    await dataValidator(req.body, loginSchema);
     const { user_id, password } = req.body;
-
-    if (!(user_id && password)) {
-      return res.status(400).json({ msg: '올바르지 않은 입력입니다.' });
-    }
 
     const findUser = await User.findOne({ where: { user_id } });
 
     if (findUser && findUser.user_password === password) {
       const token = jwt.sign(
-        { user_id: findUser.user_id, user_name: findUser.user_name },
+        { user_id, user_name: findUser.user_name },
         'jwtSecret',
         { expiresIn: '1d' }
       );
@@ -23,9 +22,7 @@ export const login: RequestHandler = async (req, res, next) => {
         token,
       });
     } else {
-      if (findUser)
-        return res.status(401).json({ msg: '틀린 패스워드입니다.' });
-      else return res.status(401).json({ msg: '유저를 찾을 수 없습니다.' });
+      throw findUser ? new Error('WRONG_PASSWORD') : new Error('INVALID_ID');
     }
   } catch (err) {
     next(err);
@@ -34,11 +31,8 @@ export const login: RequestHandler = async (req, res, next) => {
 
 export const register: RequestHandler = async (req, res, next) => {
   try {
+    await dataValidator(req.body, registerSchema);
     const { user_id, user_name, password } = req.body;
-
-    if (!(user_id && user_name && password)) {
-      return res.status(400).json({ msg: '올바르지 않은 입력입니다.' });
-    }
 
     const validUsername = await User.findOne({
       where: { user_id },
@@ -61,10 +55,8 @@ export const register: RequestHandler = async (req, res, next) => {
 
 export const validateToken: RequestHandler = async (req, res, next) => {
   try {
+    await dataValidator(req.body, tokenSchema);
     const { token } = req.body;
-    if (!token) {
-      return res.status(400).json({ msg: '올바르지 않은 입력입니다.' });
-    }
 
     jwt.verify(token, 'jwtSecret', (err: any) => {
       if (err)
