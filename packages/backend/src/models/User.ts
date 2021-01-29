@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from '../packages/backend/src/typeorm';
+import {
 
 @Entity()
 class User extends BaseEntity {
@@ -6,6 +6,7 @@ class User extends BaseEntity {
   id!: number;
 
   @Column()
+  user_id!: string;
   user_name!: string;
 
   @Column()

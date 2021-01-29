@@ -1,4 +1,4 @@
-import { Router } from '../packages/backend/src/express';
+import { Router } from 'express';
 import * as auth from './ctrl';
 
 const router = Router();

@@ -1,9 +1,9 @@
-import express from '../packages/backend/src/express';
-import morgan from '../packages/backend/src/morgan';
-import cors from '../packages/backend/src/cors';
-import controller from '../packages/backend/src/controller';
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import controller from 'controller';
 
-import { createConnection } from '../packages/backend/src/typeorm';
+import { createConnection } from 'typeorm';
 
 const app = express();
 
