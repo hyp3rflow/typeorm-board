@@ -18,9 +18,13 @@ const errorList: { [key: string]: Error } = {
     statusCode: 400,
     msg: '입력이 올바르지 않습니다.',
   },
+  DUPLICATE_ID: {
+    statusCode: 406,
+    msg: '이미 존재하는 아이디입니다.',
+  },
   AUTH_FAILED: {
     statusCode: 401,
-    msg: 'Unauthorized',
+    msg: '사용자 정보를 인증할 수 없습니다.',
   },
   NOT_EXIST: {
     statusCode: 404,
