@@ -13,7 +13,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
     if (findUser && findUser.user_password === password) {
       const token = jwt.sign(
-        { user_id, user_name: findUser.user_name },
+        { id: findUser.id, user_id, user_name: findUser.user_name },
         'jwtSecret',
         { expiresIn: '1d' }
       );
@@ -34,11 +34,11 @@ export const register: RequestHandler = async (req, res, next) => {
     await dataValidator(req.body, registerSchema);
     const { user_id, user_name, password } = req.body;
 
-    const validUsername = await User.findOne({
+    const findUsername = await User.findOne({
       where: { user_id },
     });
-    if (validUsername) {
-      return res.status(406).json({ msg: '이미 존재하는 username입니다.' });
+    if (findUsername) {
+      throw new Error('DUPLICATE_ID');
     }
 
     const newUser = new User();
@@ -47,7 +47,7 @@ export const register: RequestHandler = async (req, res, next) => {
     newUser.user_password = password;
     await User.save(newUser);
 
-    return res.status(200).json({ msg: '회원가입 성공!' });
+    return res.status(200).end();
   } catch (err) {
     next(err);
   }
